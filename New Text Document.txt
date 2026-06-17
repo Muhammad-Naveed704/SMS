@@ -1,0 +1,26 @@
+Role	Email	Password
+Owner
+owner@sms.local
+Owner@123
+School Admin
+schooladmin@sms.local
+School@123
+Teacher
+teacher@sms.local
+Teacher@123
+Student
+student@sms.local
+Student@123
+Parent
+parent@sms.local
+Parent@123
+
+new 
+Email: schooladmin@sms.local
+Password: School@123
+
+NEXT_PUBLIC_USE_MOCK_AUTH=true
+Agar dev server chal raha hai to restart karo:
+
+npm run dev
+Ab aap in users se login karke poori UI role-wise check kar sakte ho.
