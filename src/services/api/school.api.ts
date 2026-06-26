@@ -5,47 +5,54 @@ import type {
   PaginatedResponse,
   SchoolDashboardStats,
 } from "@/types/school.types";
+import type {
+  AttendanceRecord,
+  Exam,
+  FeeRecord,
+  SchoolClass,
+  SchoolNotification,
+  SchoolSettingsData,
+  SchoolTeacher,
+  TimetableSlot,
+} from "@/types/school-admin.types";
 import type { StudentListItem } from "@/types/student.types";
-import type { TeacherListItem } from "@/types/teacher.types";
-import { api } from "./axios";
+import { apiGet, apiPatch } from "./client";
 
 export const schoolApi = {
-  getDashboardStats: async (): Promise<SchoolDashboardStats> => {
-    const response = await api.get<{ data: SchoolDashboardStats }>(
-      "/school/dashboard"
-    );
-    return response.data.data;
-  },
+  getDashboardStats: () => apiGet<SchoolDashboardStats>("/school/dashboard"),
 
-  getAttendanceOverview: async (): Promise<AttendanceOverview[]> => {
-    const response = await api.get<{ data: AttendanceOverview[] }>(
-      "/school/attendance/overview"
-    );
-    return response.data.data;
-  },
+  getAttendanceOverview: () => apiGet<AttendanceOverview[]>("/school/attendance/overview"),
 
-  getFeeCollectionSummary: async (): Promise<FeeCollectionSummary[]> => {
-    const response = await api.get<{ data: FeeCollectionSummary[] }>(
-      "/school/fees/summary"
-    );
-    return response.data.data;
-  },
+  getFeeCollectionSummary: () => apiGet<FeeCollectionSummary[]>("/school/fees/summary"),
 
-  getStudents: async (
-    params?: PaginationParams
-  ): Promise<PaginatedResponse<StudentListItem>> => {
-    const response = await api.get<{
-      data: PaginatedResponse<StudentListItem>;
-    }>("/school/students", { params });
-    return response.data.data;
-  },
+  getStudents: (params?: PaginationParams) =>
+    apiGet<PaginatedResponse<StudentListItem>>("/school/students", { params }),
 
-  getTeachers: async (
-    params?: PaginationParams
-  ): Promise<PaginatedResponse<TeacherListItem>> => {
-    const response = await api.get<{
-      data: PaginatedResponse<TeacherListItem>;
-    }>("/school/teachers", { params });
-    return response.data.data;
-  },
+  getStudent: (id: string) => apiGet<StudentListItem>(`/school/students/${id}`),
+
+  getTeachers: (params?: PaginationParams) =>
+    apiGet<PaginatedResponse<SchoolTeacher>>("/school/teachers", { params }),
+
+  getClasses: () => apiGet<SchoolClass[]>("/school/classes"),
+
+  getClass: (id: string) =>
+    apiGet<SchoolClass & { students?: Array<{ id: string; firstName: string; lastName: string; rollNumber: string; section: string }> }>(
+      `/school/classes/${id}`
+    ),
+
+  getAttendance: (classId: string, date: string) =>
+    apiGet<AttendanceRecord[]>("/school/attendance", { params: { classId, date } }),
+
+  getFees: () => apiGet<FeeRecord[]>("/school/fees"),
+
+  getExams: () => apiGet<Exam[]>("/school/exams"),
+
+  getTimetable: () => apiGet<TimetableSlot[]>("/school/timetable"),
+
+  getNotifications: () => apiGet<SchoolNotification[]>("/school/notifications"),
+
+  getSettings: () => apiGet<SchoolSettingsData>("/school/settings"),
+
+  updateSettings: (payload: Partial<SchoolSettingsData>) =>
+    apiPatch<SchoolSettingsData>("/school/settings", payload),
 };

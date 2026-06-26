@@ -1,37 +1,18 @@
 import type { PaginationParams } from "@/lib/validators";
 import type { PaginatedResponse } from "@/types/school.types";
 import type { Teacher, TeacherListItem } from "@/types/teacher.types";
-import { api } from "./axios";
+import { apiDelete, apiGet, apiPatch, apiPost } from "./client";
 
 export const teacherApi = {
-  getAll: async (
-    params?: PaginationParams
-  ): Promise<PaginatedResponse<TeacherListItem>> => {
-    const response = await api.get<{
-      data: PaginatedResponse<TeacherListItem>;
-    }>("/teachers", { params });
-    return response.data.data;
-  },
+  getAll: (params?: PaginationParams) =>
+    apiGet<PaginatedResponse<TeacherListItem>>("/school/teachers", { params }),
 
-  getById: async (id: string): Promise<Teacher> => {
-    const response = await api.get<{ data: Teacher }>(`/teachers/${id}`);
-    return response.data.data;
-  },
+  getById: (id: string) => apiGet<Teacher>(`/school/teachers/${id}`),
 
-  create: async (payload: Partial<Teacher>): Promise<Teacher> => {
-    const response = await api.post<{ data: Teacher }>("/teachers", payload);
-    return response.data.data;
-  },
+  create: (payload: Partial<Teacher>) => apiPost<Teacher>("/school/teachers", payload),
 
-  update: async (id: string, payload: Partial<Teacher>): Promise<Teacher> => {
-    const response = await api.patch<{ data: Teacher }>(
-      `/teachers/${id}`,
-      payload
-    );
-    return response.data.data;
-  },
+  update: (id: string, payload: Partial<Teacher>) =>
+    apiPatch<Teacher>(`/school/teachers/${id}`, payload),
 
-  delete: async (id: string): Promise<void> => {
-    await api.delete(`/teachers/${id}`);
-  },
+  delete: (id: string) => apiDelete(`/school/teachers/${id}`),
 };

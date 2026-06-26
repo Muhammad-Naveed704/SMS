@@ -28,6 +28,7 @@ const RANGES = [
 ] as const;
 
 type Range = (typeof RANGES)[number]["id"];
+data: Array<{ label: string; value: number }>;
 
 function GrowthChart({
   title,
@@ -44,7 +45,7 @@ function GrowthChart({
   color?: string;
   formatValue?: (v: number) => string;
 }) {
-  const chartData = data.map((d) => ({ label: d.label, value: d.value }));
+  const chartData = (data || []).map((d) => ({ label: d.label, value: d.value }));
   return (
     <ChartCard title={title} description={description}>
       <ResponsiveContainer width="100%" height="100%">
@@ -103,12 +104,12 @@ export function AnalyticsPage() {
       />
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <GrowthChart title="School Growth" description="New schools over time" data={data.schoolGrowth} color="var(--primary)" />
-        <GrowthChart title="Student Growth" description="Total students across platform" data={data.studentGrowth} color="var(--success)" formatValue={formatNumber} />
-        <GrowthChart title="Revenue Growth" description="Monthly recurring revenue" data={data.revenueGrowth} color="var(--warning)" formatValue={formatCurrency} />
+        <GrowthChart title="School Growth" description="New schools over time" data={data.schoolGrowth || []} color="var(--primary)" />
+        <GrowthChart title="Student Growth" description="Total students across platform" data={data.studentGrowth || []} color="var(--success)" formatValue={formatNumber} />
+        <GrowthChart title="Revenue Growth" description="Monthly recurring revenue" data={data.revenueGrowth || []} color="var(--warning)" formatValue={formatCurrency} />
         <ChartCard title="Active Users" description="Daily active users">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data.activeUsers}>
+            <LineChart data={data.activeUsers || []}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="label" stroke="var(--muted-foreground)" fontSize={12} />
               <YAxis stroke="var(--muted-foreground)" fontSize={12} />
